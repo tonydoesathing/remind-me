@@ -49,24 +49,27 @@ class App extends StatelessWidget {
             return MaterialApp(
               title: 'RemindMe',
               theme: ThemeData(
-                  colorScheme: lightColorScheme,
-                  appBarTheme: AppBarTheme(
-                      titleTextStyle: TextStyle(
-                          color: lightColorScheme.onBackground, fontSize: 22),
-                      backgroundColor: Colors.white.withAlpha(0),
-                      centerTitle: true,
-                      elevation: 0),
-                  floatingActionButtonTheme: FloatingActionButtonThemeData(
-                      backgroundColor: lightColorScheme.primaryContainer,
-                      foregroundColor: lightColorScheme.onPrimaryContainer)),
+                useMaterial3: true,
+                colorScheme: lightColorScheme,
+                appBarTheme: AppBarTheme(
+                    titleTextStyle: TextStyle(
+                        color: lightColorScheme.onBackground, fontSize: 22),
+                    backgroundColor: Colors.white.withAlpha(0),
+                    centerTitle: true,
+                    elevation: 0),
+                floatingActionButtonTheme: FloatingActionButtonThemeData(
+                    backgroundColor: lightColorScheme.primaryContainer,
+                    foregroundColor: lightColorScheme.onPrimaryContainer),
+              ),
               darkTheme: ThemeData(
-                  colorScheme: darkColorScheme,
-                  appBarTheme: AppBarTheme(
-                      titleTextStyle: TextStyle(
-                          color: darkColorScheme.onBackground, fontSize: 22),
-                      backgroundColor: Colors.white.withAlpha(0),
-                      centerTitle: true,
-                      elevation: 0)),
+                colorScheme: darkColorScheme,
+                appBarTheme: AppBarTheme(
+                    titleTextStyle: TextStyle(
+                        color: darkColorScheme.onBackground, fontSize: 22),
+                    backgroundColor: Colors.white.withAlpha(0),
+                    centerTitle: true,
+                    elevation: 0),
+              ),
               home: const HomePage(),
             );
           }),

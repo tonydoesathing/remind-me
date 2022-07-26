@@ -27,6 +27,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                     )),
             initialReminder)) {
     on<UpdateLocalReminderEvent>((event, emit) {
+      // TODO: validation
       emit(EditDisplayed(event.reminder, event.initialReminder));
     });
 

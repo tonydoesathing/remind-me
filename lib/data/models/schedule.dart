@@ -59,7 +59,7 @@ class Schedule extends Equatable {
             'If not repeating, must provide full date fields'),
         assert(minute == null || (minute >= 0 && minute < 60),
             'Minutes must be between 0-59'),
-        assert(hour == null || (hour >= 0 && hour < 23),
+        assert(hour == null || (hour >= 0 && hour < 24),
             'Hours must be between 0-23'),
         assert(
             day == null || (day > 0 && day < 32), 'Days must be between 1-31'),
