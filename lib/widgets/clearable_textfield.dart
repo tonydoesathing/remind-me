@@ -15,7 +15,7 @@ class ClearableTextField extends StatefulWidget {
   final String? errorText;
   final String? label;
   final Widget? prefix;
-  ClearableTextField(
+  const ClearableTextField(
       {Key? key,
       this.initialValue,
       this.onChanged,
@@ -29,7 +29,7 @@ class ClearableTextField extends StatefulWidget {
 }
 
 class _ClearableTextFieldState extends State<ClearableTextField> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _ClearableTextFieldState extends State<ClearableTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return TextField(
       onChanged: widget.onChanged,
       controller: _controller,
       decoration: InputDecoration(

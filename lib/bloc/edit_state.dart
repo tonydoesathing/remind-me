@@ -2,38 +2,39 @@ part of 'edit_bloc.dart';
 
 abstract class EditState extends Equatable {
   final String? title;
-  final String? url;
+  final dynamic payload;
   final Schedule schedule;
   final Reminder? initialReminder;
 
-  const EditState(this.title, this.url, this.schedule, this.initialReminder);
+  const EditState(
+      this.title, this.payload, this.schedule, this.initialReminder);
 
   @override
-  List<Object?> get props => [title, url, schedule, initialReminder];
+  List<Object?> get props => [title, payload, schedule, initialReminder];
 }
 
 /// Displaying the reminder
 class EditDisplayed extends EditState {
   const EditDisplayed(
-      super.title, super.url, super.schedule, super.initialReminder);
+      super.title, super.payload, super.schedule, super.initialReminder);
 }
 
 /// When saving
 class EditSaving extends EditState {
   const EditSaving(
-      super.title, super.url, super.schedule, super.initialReminder);
+      super.title, super.payload, super.schedule, super.initialReminder);
 }
 
 /// When save succeeds
 class EditSaveSuccessful extends EditState {
   const EditSaveSuccessful(
-      super.title, super.url, super.schedule, super.initialReminder);
+      super.title, super.payload, super.schedule, super.initialReminder);
 }
 
 /// When save fails
 class EditSaveFailure extends EditState {
   final EditFailureError error;
-  const EditSaveFailure(super.title, super.url, super.schedule,
+  const EditSaveFailure(super.title, super.payload, super.schedule,
       super.initialReminder, this.error);
 
   @override

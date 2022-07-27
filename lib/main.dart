@@ -44,6 +44,12 @@ class App extends StatelessWidget {
                 seedColor: _brandPrimary,
                 brightness: Brightness.dark,
               );
+              // switch around the error container colors
+              darkColorScheme = darkColorScheme.copyWith(
+                  error: darkColorScheme.errorContainer,
+                  errorContainer: darkColorScheme.error,
+                  onError: darkColorScheme.onErrorContainer,
+                  onErrorContainer: darkColorScheme.onError);
             }
 
             return MaterialApp(
@@ -62,6 +68,7 @@ class App extends StatelessWidget {
                     foregroundColor: lightColorScheme.onPrimaryContainer),
               ),
               darkTheme: ThemeData(
+                useMaterial3: true,
                 colorScheme: darkColorScheme,
                 appBarTheme: AppBarTheme(
                     titleTextStyle: TextStyle(

@@ -25,14 +25,25 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                   month: DateTime.now().month,
                   year: DateTime.now().year,
                 ),
-                initialReminder)) {
+                Reminder(
+                    enabled: true,
+                    payload: null,
+                    type: Reminder.website,
+                    schedule: Schedule(
+                      repeating: false,
+                      minute: DateTime.now().minute,
+                      hour: DateTime.now().hour,
+                      day: DateTime.now().day,
+                      month: DateTime.now().month,
+                      year: DateTime.now().year,
+                    )))) {
     on<UpdateLocalReminderEvent>((event, emit) {
       _ValidateResults results = _validate(event);
 
       if (results.isError) {
         emit(EditSaveFailure(
             event.title,
-            event.url,
+            event.payload,
             event.schedule,
             initialReminder,
             EditFailureError(null,
@@ -42,53 +53,68 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                 scheduleError: results.scheduleError)));
       } else {
         emit(EditDisplayed(
-            event.title, event.url, event.schedule, event.initialReminder));
+            event.title, event.payload, event.schedule, event.initialReminder));
       }
-      // emit(EditDisplayed(
-      //     event.title, event.url, event.schedule, event.initialReminder));
     });
 
     on<SaveReminderEvent>(
       (event, emit) async {
         emit(EditSaving(
-            event.title, event.url, event.schedule, event.initialReminder));
+            event.title, event.payload, event.schedule, event.initialReminder));
         // validate input
-        // must have schedule
-        if (event.schedule == null) {}
-        //
+        _ValidateResults results = _validate(event);
 
-        if (event.schedule != null) {
-          // if initial reminder is null, it's a new reminder that must be added
-          if (event.initialReminder == null) {
+        if (results.isError) {
+          emit(EditSaveFailure(
+              event.title,
+              event.payload,
+              event.schedule,
+              initialReminder,
+              EditFailureError(null,
+                  titleError: results.titleError,
+                  payloadError: results.payloadError,
+                  timeError: results.timeError,
+                  scheduleError: results.scheduleError)));
+        } else {
+          // try and save
+          // if initial reminder's id is null, then we're adding a new reminder
+          if (event.initialReminder?.id == null) {
             try {
               Reminder addedReminder = await _reminderRepository.addReminder(
                   Reminder(
                       enabled: true,
                       title: event.title,
-                      payload: event.url,
+                      payload: event.payload,
                       type: Reminder.website,
                       schedule: event.schedule));
-              emit(EditSaveSuccessful(event.title, event.url, event.schedule,
+              emit(EditSaveSuccessful(
+                  addedReminder.title,
+                  addedReminder.payload,
+                  addedReminder.schedule,
                   event.initialReminder));
             } catch (e) {
-              emit(EditSaveFailure(event.title, event.url, event.schedule,
+              emit(EditSaveFailure(event.title, event.payload, event.schedule,
                   event.initialReminder, EditFailureError(e)));
             }
           } else {
+            // otherwise, it's an old reminder that must be updated
             try {
               Reminder editedReminder = await _reminderRepository.editReminder(
                   Reminder(
                       enabled: true,
                       title: event.title,
-                      payload: event.url,
+                      payload: event.payload,
                       type: Reminder.website,
                       schedule: event.schedule));
-              emit(EditSaveSuccessful(event.title, event.url, event.schedule,
+              emit(EditSaveSuccessful(
+                  editedReminder.title,
+                  editedReminder.payload,
+                  editedReminder.schedule,
                   event.initialReminder));
             } catch (e) {
               emit(EditSaveFailure(
                   event.title,
-                  event.url,
+                  event.payload,
                   event.schedule,
                   event.initialReminder,
                   EditFailureError(
@@ -96,11 +122,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                   )));
             }
           }
-        } else {
-          emit(EditSaveFailure(event.title, event.url, event.schedule,
-              event.initialReminder, EditFailureError(null)));
         }
-        // otherwise, it's an old reminder that must be updated
       },
     );
   }
@@ -110,9 +132,9 @@ class EditBloc extends Bloc<EditEvent, EditState> {
     String? payloadError;
     String? timeError;
     String? scheduleError;
-    if (event.url == null || event.url == "") {
+    if (event.payload == null || event.payload == "") {
       payloadError = "URL is required";
-    } else if (!isURL(event.url)) {
+    } else if (!isURL(event.payload)) {
       payloadError = "URL must be a valid URL";
     }
     if (event.schedule.minute == null || event.schedule.hour == null) {
