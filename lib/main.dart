@@ -69,6 +69,9 @@ class App extends StatelessWidget {
                     backgroundColor: Colors.white.withAlpha(0),
                     centerTitle: true,
                     elevation: 0),
+                floatingActionButtonTheme: FloatingActionButtonThemeData(
+                    backgroundColor: darkColorScheme.primaryContainer,
+                    foregroundColor: darkColorScheme.onPrimaryContainer),
               ),
               home: const HomePage(),
             );
