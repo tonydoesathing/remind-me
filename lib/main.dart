@@ -85,4 +85,8 @@ class App extends StatelessWidget {
           }),
         ));
   }
+
+  void dispose() {
+    reminderRepository.dispose();
+  }
 }

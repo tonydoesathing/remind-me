@@ -1,31 +1,29 @@
 part of 'home_bloc.dart';
 
 abstract class HomeEvent extends Equatable {
-  const HomeEvent();
+  final List<Reminder> reminders;
+  const HomeEvent(this.reminders);
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [reminders];
 }
 
 /// Loads reminders
-class LoadHomeEvent extends HomeEvent {}
+class LoadHomeEvent extends HomeEvent {
+  const LoadHomeEvent(super.reminders);
+}
 
-/// Request to add a reminder
-class AddNewReminder extends HomeEvent {
-  final Reminder? newReminder;
-
-  const AddNewReminder(this.newReminder);
-
-  @override
-  List<Object?> get props => [newReminder];
+/// Show reminders
+class DisplayReminders extends HomeEvent {
+  const DisplayReminders(super.reminders);
 }
 
 /// Request to edit a reminder
 class EditReminder extends HomeEvent {
   final Reminder edited;
 
-  const EditReminder(this.edited);
+  const EditReminder(this.edited, super.reminders);
 
   @override
-  List<Object> get props => [edited];
+  List<Object> get props => [...super.props, edited];
 }

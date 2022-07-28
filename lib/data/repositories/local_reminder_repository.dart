@@ -1,26 +1,36 @@
+import 'dart:async';
+
 import '../models/reminder.dart';
 import 'reminder_repository.dart';
 
 /// Implements [ReminderRepository] in local memory
 class LocalReminderRepository extends ReminderRepository {
-  List<Reminder> reminders = [];
+  final StreamController<List<Reminder>> _streamController =
+      StreamController<List<Reminder>>.broadcast();
+  List<Reminder> _reminders = [];
 
   @override
   Future<Reminder> addReminder(Reminder reminder) async {
-    Reminder newReminder = reminder.copyWith(id: reminders.length + 1);
-    reminders.add(newReminder);
-
+    Reminder newReminder = reminder.copyWith(id: _reminders.length + 1);
+    _reminders.add(newReminder);
+    _streamController.add(List<Reminder>.of(_reminders));
     return newReminder;
   }
 
   @override
+  Stream<List<Reminder>> get reminders {
+    return _streamController.stream;
+  }
+
+  @override
   Future<Reminder> editReminder(Reminder reminder) async {
-    int index = reminders.indexWhere((element) => element.id == reminder.id);
+    int index = _reminders.indexWhere((element) => element.id == reminder.id);
 
     if (index > -1) {
-      reminders.removeAt(index);
-      reminders.insert(index, reminder);
+      _reminders.removeAt(index);
+      _reminders.insert(index, reminder);
 
+      _streamController.add(List<Reminder>.of(_reminders));
       return reminder;
     }
     throw ReminderNotFound();
@@ -28,10 +38,12 @@ class LocalReminderRepository extends ReminderRepository {
 
   @override
   Future<Reminder> removeReminder(Reminder reminder) async {
-    int index = reminders.indexWhere((rem) => rem.id == reminder.id);
+    int index = _reminders.indexWhere((rem) => rem.id == reminder.id);
 
     if (index > -1) {
-      reminders.removeAt(index);
+      _reminders.removeAt(index);
+
+      _streamController.add(List<Reminder>.of(_reminders));
       return reminder;
     }
     throw Exception("could not find reminder of id $reminder.id");
@@ -39,16 +51,22 @@ class LocalReminderRepository extends ReminderRepository {
 
   @override
   Future<Reminder> fetchReminder(int id) async {
-    int index = reminders.indexWhere((reminder) => reminder.id == id);
+    int index = _reminders.indexWhere((reminder) => reminder.id == id);
 
     if (index > -1) {
-      return reminders[index];
+      return _reminders[index];
     }
     throw Exception("could not find requested id of $id");
   }
 
   @override
   Future<List<Reminder>> fetchReminders() async {
-    return List<Reminder>.of(reminders);
+    _streamController.add(List<Reminder>.of(_reminders));
+    return List<Reminder>.of(_reminders);
+  }
+
+  @override
+  void dispose() {
+    _streamController.close();
   }
 }

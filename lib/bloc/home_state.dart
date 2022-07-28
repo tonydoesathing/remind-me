@@ -1,24 +1,28 @@
 part of 'home_bloc.dart';
 
 abstract class HomeState extends Equatable {
-  const HomeState();
-
-  @override
-  List<Object> get props => [];
-}
-
-/// Initial state
-class HomeInitial extends HomeState {}
-
-/// Show loading
-class HomeLoading extends HomeState {}
-
-/// Loaded state
-class HomeLoaded extends HomeState {
   final List<Reminder> reminders;
-
-  const HomeLoaded(this.reminders);
+  const HomeState(this.reminders);
 
   @override
   List<Object> get props => [reminders];
+}
+
+/// Show loading
+class HomeLoading extends HomeState {
+  const HomeLoading(super.reminders);
+}
+
+/// Loaded state
+class HomeLoaded extends HomeState {
+  const HomeLoaded(super.reminders);
+}
+
+class HomeError extends HomeState {
+  final Object error;
+
+  const HomeError(this.error, super.reminders);
+
+  @override
+  List<Object> get props => [...super.props, error];
 }

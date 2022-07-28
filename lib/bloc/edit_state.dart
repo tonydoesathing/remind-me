@@ -27,8 +27,13 @@ class EditSaving extends EditState {
 
 /// When save succeeds
 class EditSaveSuccessful extends EditState {
-  const EditSaveSuccessful(
-      super.title, super.payload, super.schedule, super.initialReminder);
+  final Reminder savedReminder;
+
+  const EditSaveSuccessful(super.title, super.payload, super.schedule,
+      super.initialReminder, this.savedReminder);
+
+  @override
+  List<Object?> get props => [...super.props, savedReminder];
 }
 
 /// When save fails

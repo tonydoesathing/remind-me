@@ -91,7 +91,8 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                   addedReminder.title,
                   addedReminder.payload,
                   addedReminder.schedule,
-                  event.initialReminder));
+                  event.initialReminder,
+                  addedReminder));
             } catch (e) {
               emit(EditSaveFailure(event.title, event.payload, event.schedule,
                   event.initialReminder, EditFailureError(e)));
@@ -110,7 +111,8 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                   editedReminder.title,
                   editedReminder.payload,
                   editedReminder.schedule,
-                  event.initialReminder));
+                  event.initialReminder,
+                  editedReminder));
             } catch (e) {
               emit(EditSaveFailure(
                   event.title,
