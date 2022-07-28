@@ -5,6 +5,12 @@ abstract class ReminderRepository {
   /// fetches all of the reminders
   Future<List<Reminder>> fetchReminders();
 
+  /// everytime there's an update to the reminders, returns the list
+  Stream<List<Reminder>> get reminders;
+
+  /// disposes of the streamcontroller
+  void dispose();
+
   /// fetches the reminder of [id]
   Future<Reminder> fetchReminder(int id);
 

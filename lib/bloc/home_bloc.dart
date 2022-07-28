@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:remind_me/data/models/reminder.dart';
 import 'package:remind_me/data/models/schedule.dart';
@@ -12,35 +13,32 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ReminderRepository _reminderRepository;
 
-  HomeBloc(this._reminderRepository) : super(HomeInitial()) {
+  HomeBloc(this._reminderRepository) : super(const HomeLoading([])) {
+    _reminderRepository.reminders.listen(
+      (event) {
+        add(DisplayReminders(event));
+      },
+    );
+
     on<LoadHomeEvent>(((event, emit) async {
-      emit(HomeLoading());
+      emit(HomeLoading(event.reminders));
       final List<Reminder> reminders =
           await _reminderRepository.fetchReminders();
       emit(HomeLoaded(reminders));
     }));
 
-    on<AddNewReminder>(
-      (event, emit) async {
-        if (state is HomeLoaded) {
-          final state = this.state as HomeLoaded;
-          final rem = Reminder(
-              title: Random().nextBool() ? null : "Title",
-              enabled: true,
-              payload: "payload",
-              type: Reminder.website,
-              schedule: Schedule(minute: 0, hour: 0, repeating: true));
-          final reminder = await _reminderRepository.addReminder(rem);
-          emit(HomeLoaded(List.from(state.reminders)..add(reminder)));
-        }
+    on<DisplayReminders>(
+      (event, emit) {
+        emit(HomeLoaded(event.reminders));
       },
+      transformer: restartable(),
     );
 
     on<EditReminder>(((event, emit) async {
       await _reminderRepository.editReminder(event.edited);
-      final List<Reminder> reminders =
-          await _reminderRepository.fetchReminders();
-      emit(HomeLoaded(reminders));
+      // final List<Reminder> reminders =
+      //     await _reminderRepository.fetchReminders();
+      //emit(HomeLoaded(reminders));
     }));
   }
 }
