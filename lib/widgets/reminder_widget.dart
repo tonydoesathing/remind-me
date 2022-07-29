@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remind_me/pages/editreminderpage.dart';
 
 import '../data/models/reminder.dart';
 
@@ -26,7 +27,15 @@ class ReminderWidget extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
         child: InkWell(
-          onTap: reminder.enabled ? () => print("meow") : null,
+          onTap: reminder.enabled
+              ? () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditReminderPage(
+                              initialReminder: reminder,
+                            )),
+                  )
+              : null,
           onLongPress: reminder.enabled ? onLongPress : null,
           child: ListTile(
             leading: Icon(

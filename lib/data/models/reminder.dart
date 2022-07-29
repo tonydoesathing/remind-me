@@ -54,7 +54,11 @@ class Reminder extends Equatable {
     Schedule? schedule,
   }) {
     return Reminder(
-      title: title ?? this.title,
+      title: title == null
+          ? this.title
+          : title == ""
+              ? null
+              : title,
       enabled: enabled ?? this.enabled,
       payload: payload ?? this.payload,
       type: type ?? this.type,

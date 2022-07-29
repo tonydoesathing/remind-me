@@ -57,6 +57,7 @@ class EditReminderPage extends StatelessWidget {
           return WillPopScope(
             onWillPop: () => _onBack(context, state),
             child: Scaffold(
+              backgroundColor: Theme.of(context).colorScheme.surface,
               appBar: AppBar(
                 leadingWidth: 100,
                 //automaticallyImplyLeading: false,
@@ -106,7 +107,7 @@ class EditReminderPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ClearableTextField(
-                    initialValue: state.initialReminder?.title,
+                    initialValue: state.initialReminder?.payload,
                     label: "URL",
                     prefix: Icon(Icons.public),
                     errorText: state is EditSaveFailure
