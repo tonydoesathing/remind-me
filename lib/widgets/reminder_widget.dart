@@ -7,8 +7,13 @@ class ReminderWidget extends StatelessWidget {
   final Reminder reminder;
   final Function(bool)? onChanged;
   final Function()? onLongPress;
+  final Function()? onTap;
   const ReminderWidget(
-      {Key? key, required this.reminder, this.onChanged, this.onLongPress})
+      {Key? key,
+      required this.reminder,
+      this.onChanged,
+      this.onTap,
+      this.onLongPress})
       : super(key: key);
 
   @override
@@ -27,15 +32,7 @@ class ReminderWidget extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
         child: InkWell(
-          onTap: reminder.enabled
-              ? () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditReminderPage(
-                              initialReminder: reminder,
-                            )),
-                  )
-              : null,
+          onTap: onTap,
           onLongPress: reminder.enabled ? onLongPress : null,
           child: ListTile(
             leading: Icon(

@@ -13,32 +13,42 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ReminderRepository _reminderRepository;
 
-  HomeBloc(this._reminderRepository) : super(const HomeLoading([])) {
-    _reminderRepository.reminders.listen(
-      (event) {
-        add(DisplayReminders(event));
-      },
-    );
+  HomeBloc(this._reminderRepository) : super(const HomeLoading([], null)) {
+    // _reminderRepository.reminders.listen(
+    //   (event) {
+    //     add(DisplayReminders(event, null));
+    //   },
+    // );
 
     on<LoadHomeEvent>(((event, emit) async {
-      emit(HomeLoading(event.reminders));
+      emit(HomeLoading(event.reminders, event.selected));
       final List<Reminder> reminders =
           await _reminderRepository.fetchReminders();
-      emit(HomeLoaded(reminders));
+      add(DisplayReminders(reminders, event.selected));
+      //emit(HomeLoaded(reminders, event.selected));
     }));
 
     on<DisplayReminders>(
-      (event, emit) {
-        emit(HomeLoaded(event.reminders));
+      (event, emit) async {
+        emit(HomeLoaded(event.reminders, event.selected));
+        await emit.forEach(_reminderRepository.reminders,
+            onData: (List<Reminder> data) {
+          return HomeLoaded(data, event.selected);
+        });
       },
       transformer: restartable(),
     );
 
     on<EditReminder>(((event, emit) async {
       await _reminderRepository.editReminder(event.edited);
-      // final List<Reminder> reminders =
-      //     await _reminderRepository.fetchReminders();
-      //emit(HomeLoaded(reminders));
+    }));
+
+    on<ToggleSelectView>(((event, emit) {
+      if (event.selected == null) {
+        add(DisplayReminders(event.reminders, const []));
+      } else {
+        add(DisplayReminders(event.reminders, null));
+      }
     }));
   }
 }
