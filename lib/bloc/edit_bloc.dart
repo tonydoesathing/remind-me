@@ -101,11 +101,9 @@ class EditBloc extends Bloc<EditEvent, EditState> {
             // otherwise, it's an old reminder that must be updated
             try {
               Reminder editedReminder = await _reminderRepository.editReminder(
-                  Reminder(
-                      enabled: true,
+                  event.initialReminder!.copyWith(
                       title: event.title,
                       payload: event.payload,
-                      type: Reminder.website,
                       schedule: event.schedule));
               emit(EditSaveSuccessful(
                   editedReminder.title,

@@ -11,8 +11,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: ((context) =>
-          HomeBloc(context.read<ReminderRepository>())..add(LoadHomeEvent([]))),
+      create: ((context) => HomeBloc(context.read<ReminderRepository>())
+        ..add(const LoadHomeEvent([]))),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return Scaffold(
@@ -27,7 +27,8 @@ class HomePage extends StatelessWidget {
               onPressed: (() {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EditReminderPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const EditReminderPage()),
                 );
               }),
               child: const Icon(Icons.add),
