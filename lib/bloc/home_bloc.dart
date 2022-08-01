@@ -50,5 +50,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         add(DisplayReminders(event.reminders, null));
       }
     }));
+
+    on<ToggleSelectReminder>(((event, emit) {
+      if (event.selected != null && event.selected!.contains(event.reminder)) {
+        final int index = event.selected!.indexOf(event.reminder);
+        if (index < event.selected!.length - 1) {
+          add(DisplayReminders(
+              event.reminders,
+              event.selected!.sublist(0, index) +
+                  event.selected!.sublist(index + 1)));
+        } else {
+          add(DisplayReminders(
+              event.reminders, event.selected!.sublist(0, index)));
+        }
+      } else if (event.selected != null) {
+        add(DisplayReminders(
+            event.reminders, event.selected! + [event.reminder]));
+      }
+    }));
   }
 }

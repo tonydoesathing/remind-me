@@ -48,8 +48,76 @@ class HomePage extends StatelessWidget {
             body: ListView.builder(
                 itemCount: state.reminders.length,
                 itemBuilder: ((context, index) {
+                  // return Row(
+                  //   children: [
+                  //     Padding(
+                  //       padding: EdgeInsets.all(8.0),
+                  //       child: Checkbox(value: false, onChanged: (value) {}),
+                  //     ),
+                  //     Expanded(
+                  //       child: Card(
+                  //         color: Theme.of(context).colorScheme.surface,
+                  //         clipBehavior: Clip.antiAlias,
+                  //         elevation: 0,
+                  //         shape: RoundedRectangleBorder(
+                  //           side: BorderSide(
+                  //             color: Theme.of(context).colorScheme.outline,
+                  //           ),
+                  //           borderRadius:
+                  //               const BorderRadius.all(Radius.circular(12)),
+                  //         ),
+                  //         child: InkWell(
+                  //           onTap: () {},
+                  //           child: Row(
+                  //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //             children: [
+                  //               Container(
+                  //                   width: 80,
+                  //                   height: 80,
+                  //                   child: Center(child: Icon(Icons.public))),
+                  //               Expanded(
+                  //                   child: Column(
+                  //                 crossAxisAlignment: CrossAxisAlignment.start,
+                  //                 children: [
+                  //                   Text(
+                  //                     "Title",
+                  //                     style: Theme.of(context)
+                  //                         .textTheme
+                  //                         .titleMedium,
+                  //                   ),
+                  //                   Text(
+                  //                     "Subtitle",
+                  //                     style: Theme.of(context)
+                  //                         .textTheme
+                  //                         .bodyMedium,
+                  //                   )
+                  //                 ],
+                  //               )),
+                  //               Container(
+                  //                   width: 80,
+                  //                   height: 80,
+                  //                   child: Center(
+                  //                       child: Switch(
+                  //                     value: true,
+                  //                     onChanged: ((value) {}),
+                  //                   ))),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // );
                   return ReminderWidget(
                     reminder: state.reminders[index],
+                    selectView: state.selected != null,
+                    selected: state.selected?.contains(state.reminders[index]),
+                    onToggleSelect: (value) {
+                      context.read<HomeBloc>().add(ToggleSelectReminder(
+                          state.reminders[index],
+                          state.reminders,
+                          state.selected));
+                    },
                     // if not in select view, enable/disable reminder
                     // if in selectview, select or deselect item
                     onTap: state.selected == null
@@ -71,7 +139,7 @@ class HomePage extends StatelessWidget {
                             ToggleSelectView(state.reminders, state.selected));
                       }
                     },
-                    onChanged: (result) => context.read<HomeBloc>().add(
+                    onToggleEnabled: (result) => context.read<HomeBloc>().add(
                         EditReminder(
                             state.reminders[index].copyWith(enabled: result),
                             state.reminders,
