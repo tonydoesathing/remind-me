@@ -171,11 +171,26 @@ class ScheduleUtils {
   }
 
   /// Return a human-readable representation of the schedule
-  String parseSchedule(Schedule schedule, String timezone) {
+  String parseSchedule(Schedule schedule) {
     // if not repeating, return the date
-    if (schedule.repeating) {
-      return "";
+    switch (schedule.repetition) {
+      case "Once":
+        return "Once on ${schedule.month}/${schedule.day}/${schedule.year} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      case "Daily":
+        return "Every day at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      case "Weekly":
+        return "Every ${dayToString(schedule.weekday!)} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      case "Monthly":
+        return "Every ${dayToQualifierString(schedule.day!)} of the month at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      case "Yearly":
+        return "Every ${schedule.month}/${schedule.day} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      default:
+        return schedule.toString();
     }
-    return "";
   }
 }
