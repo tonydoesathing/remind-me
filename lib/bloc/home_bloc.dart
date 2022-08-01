@@ -39,17 +39,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       transformer: restartable(),
     );
 
-    on<EditReminder>(((event, emit) async {
+    on<ToggleReminderEnabled>(((event, emit) async {
       await _reminderRepository.editReminder(event.edited);
     }));
 
     on<ToggleSelectView>(((event, emit) {
       if (event.selected == null) {
-        add(DisplayReminders(event.reminders, const []));
+        add(DisplayReminders(
+            event.reminders, event.reminder != null ? [event.reminder!] : []));
       } else {
         add(DisplayReminders(event.reminders, null));
       }
     }));
+
+    on<SelectAllReminders>(
+      (event, emit) {
+        add(DisplayReminders(event.reminders, event.reminders));
+      },
+    );
 
     on<ToggleSelectReminder>(((event, emit) {
       if (event.selected != null && event.selected!.contains(event.reminder)) {
@@ -68,5 +75,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             event.reminders, event.selected! + [event.reminder]));
       }
     }));
+
+    on<ToggleSelectedReminders>(((event, emit) async {
+      List<Reminder> reminders = List.from(event.reminders);
+      // edit the reminders
+      for (Reminder reminder in event.selected!) {
+        Reminder edited = await _reminderRepository
+            .editReminder(reminder.copyWith(enabled: event.on));
+        // edit the reminders locally
+        int index = event.reminders.indexOf(reminder);
+        reminders[index] = edited;
+      }
+      add(DisplayReminders(reminders, null));
+    }));
+
+    on<RemoveSelectedReminders>(
+      (event, emit) async {
+        List<Reminder> reminders = List.from(event.reminders);
+        // remove the reminders
+        for (Reminder reminder in event.selected!) {
+          await _reminderRepository.removeReminder(reminder);
+          // remove the reminders locally
+
+          reminders.remove(reminder);
+        }
+        add(DisplayReminders(reminders, null));
+      },
+    );
   }
 }

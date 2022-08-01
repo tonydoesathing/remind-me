@@ -21,10 +21,10 @@ class DisplayReminders extends HomeEvent {
 }
 
 /// Request to edit a reminder
-class EditReminder extends HomeEvent {
+class ToggleReminderEnabled extends HomeEvent {
   final Reminder edited;
 
-  const EditReminder(this.edited, super.reminders, super.selected);
+  const ToggleReminderEnabled(this.edited, super.reminders, super.selected);
 
   @override
   List<Object?> get props => [...super.props, edited];
@@ -32,7 +32,11 @@ class EditReminder extends HomeEvent {
 
 /// Toggle select view
 class ToggleSelectView extends HomeEvent {
-  const ToggleSelectView(super.reminders, super.selected);
+  final Reminder? reminder;
+  const ToggleSelectView(super.reminders, super.selected, {this.reminder});
+
+  @override
+  List<Object?> get props => [...super.props, reminder];
 }
 
 /// Toggle select reminder
@@ -45,7 +49,20 @@ class ToggleSelectReminder extends HomeEvent {
   List<Object?> get props => [...super.props, reminder];
 }
 
+class SelectAllReminders extends HomeEvent {
+  const SelectAllReminders(super.reminders, super.selected);
+}
+
 /// Remove selected reminders
 class RemoveSelectedReminders extends HomeEvent {
   const RemoveSelectedReminders(super.reminders, super.selected);
+}
+
+/// Toggles selected reminders to all be [on]
+class ToggleSelectedReminders extends HomeEvent {
+  final bool on;
+  const ToggleSelectedReminders(super.reminders, super.selected, this.on);
+
+  @override
+  List<Object?> get props => [...super.props, on];
 }
