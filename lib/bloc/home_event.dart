@@ -49,8 +49,8 @@ class ToggleSelectReminder extends HomeEvent {
   List<Object?> get props => [...super.props, reminder];
 }
 
-class SelectAllReminders extends HomeEvent {
-  const SelectAllReminders(super.reminders, super.selected);
+class ToggleSelectAllReminders extends HomeEvent {
+  const ToggleSelectAllReminders(super.reminders, super.selected);
 }
 
 /// Remove selected reminders

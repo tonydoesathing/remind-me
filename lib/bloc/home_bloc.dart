@@ -52,9 +52,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }));
 
-    on<SelectAllReminders>(
+    on<ToggleSelectAllReminders>(
       (event, emit) {
-        add(DisplayReminders(event.reminders, event.reminders));
+        if (event.selected == event.reminders) {
+          add(DisplayReminders(event.reminders, const []));
+        } else {
+          add(DisplayReminders(event.reminders, event.reminders));
+        }
       },
     );
 

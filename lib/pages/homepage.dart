@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
                   ? [
                       IconButton(
                         onPressed: () {
-                          context.read<HomeBloc>().add(SelectAllReminders(
+                          context.read<HomeBloc>().add(ToggleSelectAllReminders(
                               state.reminders, state.selected));
                         },
                         icon: const Icon(Icons.select_all),
