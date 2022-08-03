@@ -39,10 +39,12 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                     )))) {
     on<UpdateLocalReminderEvent>((event, emit) {
       _ValidateResults results = _validate(event);
-
+      // make sure title isn't an empty string
+      String? title =
+          event.title != null && event.title!.length == 0 ? null : event.title;
       if (results.isError) {
         emit(EditSaveFailure(
-            event.title,
+            title,
             event.payload,
             event.schedule,
             initialReminder,
@@ -53,7 +55,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                 scheduleError: results.scheduleError)));
       } else {
         emit(EditDisplayed(
-            event.title, event.payload, event.schedule, event.initialReminder));
+            title, event.payload, event.schedule, event.initialReminder));
       }
     });
 
