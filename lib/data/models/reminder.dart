@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:remind_me/data/models/schedule.dart';
 
-/// An [Reminder] holds the [schedule] information, whether or not it's [enabled], and the [url] to go to
+/// An [Reminder] holds the [schedule] information, whether or not it's [enabled], and the [payload] to go to
 class Reminder extends Equatable {
   /// Website type
   static const int website = 1;
@@ -54,7 +54,11 @@ class Reminder extends Equatable {
     Schedule? schedule,
   }) {
     return Reminder(
-      title: title ?? this.title,
+      title: title == null
+          ? this.title
+          : title == ""
+              ? null
+              : title,
       enabled: enabled ?? this.enabled,
       payload: payload ?? this.payload,
       type: type ?? this.type,

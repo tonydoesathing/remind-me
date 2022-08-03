@@ -38,7 +38,35 @@ class ScheduleUtils {
     return "IMPROPER DAY INT";
   }
 
-  /// Takes a day int and returns its name in String form
+  /// Takes a day string and returns its name in int form
+  int stringToDay(String day) {
+    switch (day) {
+      case "Monday":
+        return DateTime.monday;
+
+      case "Tuesday":
+        return DateTime.tuesday;
+
+      case "Wednesday":
+        return DateTime.wednesday;
+
+      case "Thursday":
+        return DateTime.thursday;
+
+      case "Friday":
+        return DateTime.friday;
+
+      case "Saturday":
+        return DateTime.saturday;
+
+      case "Sunday":
+        return DateTime.sunday;
+    }
+
+    return -1;
+  }
+
+  /// Takes a month int and returns its name in String form
   String monthToString(int month) {
     switch (month) {
       case DateTime.january:
@@ -81,12 +109,88 @@ class ScheduleUtils {
     return "IMPROPER MONTH INT";
   }
 
-  /// Return a human-readable representation of the schedule
-  String parseSchedule(Schedule schedule, String timezone) {
-    // if not repeating, return the date
-    if (schedule.repeating) {
-      return "";
+  /// Takes a month string and returns its int form
+  int stringToMonth(String month) {
+    switch (month) {
+      case "January":
+        return DateTime.january;
+
+      case "February":
+        return DateTime.february;
+
+      case "March":
+        return DateTime.march;
+
+      case "April":
+        return DateTime.april;
+
+      case "May":
+        return DateTime.may;
+
+      case "June":
+        return DateTime.june;
+
+      case "July":
+        return DateTime.july;
+
+      case "August":
+        return DateTime.august;
+
+      case "September":
+        return DateTime.september;
+
+      case "October":
+        return DateTime.october;
+
+      case "November":
+        return DateTime.november;
+
+      case "December":
+        return DateTime.december;
     }
-    return "";
+
+    return -1;
+  }
+
+  /// Takes a day of the month and returns its string form
+  String dayToQualifierString(int day) {
+    // state.schedule.day! % 10 == 1 ? "st" : state.schedule.day! % 10 == 2 ? "nd" : state.schedule.day! % 10 == 3 ? "rd" : "th"
+    if (day < 10 || day > 19) {
+      if (day % 10 == 1) {
+        return "${day}st";
+      } else if (day % 10 == 2) {
+        return "${day}nd";
+      } else if (day % 10 == 3) {
+        return "${day}rd";
+      } else {
+        return "${day}th";
+      }
+    } else {
+      return "${day}th";
+    }
+  }
+
+  /// Return a human-readable representation of the schedule
+  String parseSchedule(Schedule schedule) {
+    // if not repeating, return the date
+    switch (schedule.repetition) {
+      case "Once":
+        return "Once on ${schedule.month}/${schedule.day}/${schedule.year} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      case "Daily":
+        return "Every day at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      case "Weekly":
+        return "Every ${dayToString(schedule.weekday!)} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      case "Monthly":
+        return "Every ${dayToQualifierString(schedule.day!)} of the month at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      case "Yearly":
+        return "Every ${schedule.month}/${schedule.day} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+
+      default:
+        return schedule.toString();
+    }
   }
 }

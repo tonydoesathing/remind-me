@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:cron_parser/cron_parser.dart';
 import 'package:equatable/equatable.dart';
 
 /// Stores a day/time or a repetition cycle
@@ -59,7 +58,7 @@ class Schedule extends Equatable {
             'If not repeating, must provide full date fields'),
         assert(minute == null || (minute >= 0 && minute < 60),
             'Minutes must be between 0-59'),
-        assert(hour == null || (hour >= 0 && hour < 23),
+        assert(hour == null || (hour >= 0 && hour < 24),
             'Hours must be between 0-23'),
         assert(
             day == null || (day > 0 && day < 32), 'Days must be between 1-31'),
@@ -146,6 +145,23 @@ class Schedule extends Equatable {
     // var cronIterator = Cron().parse("0 * * * *", "Etc/UTC");
     // return cronIterator.next().toString();
     return super.toString();
+  }
+
+  String get repetition {
+    // once if repeating set to false
+    if (!repeating) {
+      return "Once";
+    } else if (minute != null && hour != null && day != null && month != null) {
+      // yearly if repeating true and hour and minute and day and month set
+      return "Yearly";
+    } else if (minute != null && hour != null && day != null) {
+      // monthly if repeating true and hour and minute and day set
+      return "Monthly";
+    } else if (minute != null && hour != null && weekday != null) {
+      // weekly if repeating true and hour and minute and weekday set
+      return "Weekly";
+    }
+    return "Daily";
   }
 }
 
