@@ -47,7 +47,7 @@ class LocalReminderRepository extends ReminderRepository {
       _streamController.add(List<Reminder>.of(_reminders));
       return reminder;
     }
-    throw Exception("could not find reminder of id $reminder.id");
+    throw ReminderNotFound();
   }
 
   @override
@@ -57,7 +57,7 @@ class LocalReminderRepository extends ReminderRepository {
     if (index > -1) {
       return _reminders[index];
     }
-    throw Exception("could not find requested id of $id");
+    throw ReminderNotFound();
   }
 
   @override

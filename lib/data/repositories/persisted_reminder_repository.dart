@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:remind_me/data/models/reminder.dart';
 import 'package:remind_me/data/providers/sembast_provider.dart';
+import 'package:remind_me/data/repositories/local_reminder_repository.dart';
 import 'package:remind_me/data/repositories/reminder_repository.dart';
 import 'package:sembast/sembast.dart';
 
 class PersistedReminderRepository extends ReminderRepository {
-  final StreamController<List<Reminder>> _streamController =
-      StreamController<List<Reminder>>.broadcast();
+  final LocalReminderRepository _repository = LocalReminderRepository();
 
   final _reminderStore = intMapStoreFactory.store("reminders");
 
@@ -15,14 +15,14 @@ class PersistedReminderRepository extends ReminderRepository {
   Future<Reminder> addReminder(Reminder reminder) async {
     final id = await _reminderStore.add(
         await SembastProvider().database, reminder.toMap());
-    List<Reminder> reminders = await fetchReminders();
-    _streamController.add(reminders);
-    return reminder.copyWith(id: id);
+    final Reminder newReminder = reminder.copyWith(id: id);
+    await _repository.addReminder(newReminder);
+    return newReminder;
   }
 
   @override
   void dispose() {
-    _streamController.close();
+    _repository.dispose();
   }
 
   @override
@@ -35,8 +35,9 @@ class PersistedReminderRepository extends ReminderRepository {
     if (numUpdated < 1) {
       throw ReminderNotFound();
     }
-    List<Reminder> reminders = await fetchReminders();
-    _streamController.add(reminders);
+
+    await _repository.editReminder(reminder);
+
     return reminder;
   }
 
@@ -61,16 +62,21 @@ class PersistedReminderRepository extends ReminderRepository {
     final finder = Finder(sortOrders: [SortOrder(Field.key)]);
     final records = await _reminderStore.find(await SembastProvider().database,
         finder: finder);
-    return records.map((record) {
+    final reminders = records.map((record) {
       Map<String, dynamic> reminderRecord = Map.from(record.value);
       reminderRecord["id"] = record.key;
 
       return Reminder.fromMap(reminderRecord);
     }).toList();
+
+    for (Reminder reminder in reminders) {
+      _repository.addReminder(reminder);
+    }
+    return reminders;
   }
 
   @override
-  Stream<List<Reminder>> get reminders => _streamController.stream;
+  Stream<List<Reminder>> get reminders => _repository.reminders;
 
   @override
   Future<Reminder> removeReminder(Reminder reminder) async {
@@ -81,8 +87,7 @@ class PersistedReminderRepository extends ReminderRepository {
     if (numDeleted < 1) {
       throw ReminderNotFound();
     }
-    List<Reminder> reminders = await fetchReminders();
-    _streamController.add(reminders);
+    await _repository.removeReminder(reminder);
     return reminder;
   }
 }

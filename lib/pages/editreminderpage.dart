@@ -86,7 +86,7 @@ class EditReminderPage extends StatelessWidget {
                     ? const Text("Edit Reminder")
                     : const Text("Add Reminder"),
               ),
-              body: Column(children: [
+              body: ListView(children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ClearableTextField(
@@ -125,6 +125,7 @@ class EditReminderPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    readOnly: true,
                     controller: TextEditingController(
                         text:
                             "${state.schedule.hour}:${state.schedule.minute! < 10 ? 0 : ""}${state.schedule.minute}"),
@@ -249,6 +250,7 @@ class EditReminderPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
+                      readOnly: true,
                       controller: TextEditingController(
                           text:
                               "${state.schedule.month}/${state.schedule.day}/${state.schedule.year}"),
@@ -323,6 +325,7 @@ class EditReminderPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
+                      readOnly: true,
                       controller: TextEditingController(
                           text:
                               "${ScheduleUtils().dayToQualifierString(state.schedule.day!)} of every month"),
@@ -353,6 +356,7 @@ class EditReminderPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
+                      readOnly: true,
                       controller: TextEditingController(
                           text:
                               "${state.schedule.month}/${state.schedule.day}"),

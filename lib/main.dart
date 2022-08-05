@@ -1,7 +1,7 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:remind_me/data/repositories/local_reminder_repository.dart';
 import 'package:remind_me/data/repositories/persisted_reminder_repository.dart';
 import 'package:remind_me/data/repositories/reminder_repository.dart';
 import 'package:remind_me/pages/homepage.dart';
@@ -52,6 +52,8 @@ class App extends StatelessWidget {
                 useMaterial3: true,
                 colorScheme: lightColorScheme,
                 appBarTheme: AppBarTheme(
+                    systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+                        statusBarColor: const Color.fromARGB(0, 0, 0, 0)),
                     titleTextStyle: TextStyle(
                         color: lightColorScheme.onBackground, fontSize: 22),
                     backgroundColor: Colors.white.withAlpha(0),
@@ -65,6 +67,8 @@ class App extends StatelessWidget {
                 useMaterial3: true,
                 colorScheme: darkColorScheme,
                 appBarTheme: AppBarTheme(
+                    systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+                        statusBarColor: const Color.fromARGB(0, 0, 0, 0)),
                     titleTextStyle: TextStyle(
                         color: darkColorScheme.onBackground, fontSize: 22),
                     backgroundColor: Colors.white.withAlpha(0),
