@@ -108,8 +108,9 @@ class EditReminderPage extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ClearableTextField(
                     initialValue: state.initialReminder?.payload,
+                    keyboardType: TextInputType.url,
                     label: "URL",
-                    prefix: Icon(Icons.public),
+                    prefix: const Icon(Icons.public),
                     errorText: state is EditSaveFailure
                         ? state.error.payloadError
                         : null,
