@@ -129,9 +129,9 @@ class EditReminderPage extends StatelessWidget {
                     readOnly: true,
                     controller: TextEditingController(
                         text:
-                            "${state.schedule.hour}:${state.schedule.minute! < 10 ? 0 : ""}${state.schedule.minute}"),
+                            "${state.schedule.hour! == 0 ? 0 : ""}${state.schedule.hour}:${state.schedule.minute! < 10 ? 0 : ""}${state.schedule.minute}"),
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       errorText: state is EditSaveFailure
                           ? state.error.timeError
                           : null,
