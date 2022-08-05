@@ -11,7 +11,8 @@ class LocalReminderRepository extends ReminderRepository {
 
   @override
   Future<Reminder> addReminder(Reminder reminder) async {
-    Reminder newReminder = reminder.copyWith(id: _reminders.length + 1);
+    Reminder newReminder =
+        reminder.copyWith(id: reminder.id ?? _reminders.length + 1);
     _reminders.add(newReminder);
     _streamController.add(List<Reminder>.of(_reminders));
     return newReminder;
