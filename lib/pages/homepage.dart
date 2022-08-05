@@ -13,7 +13,36 @@ class HomePage extends StatelessWidget {
     return BlocProvider(
       create: ((context) => HomeBloc(context.read<ReminderRepository>())
         ..add(const LoadHomeEvent([], null))),
-      child: BlocBuilder<HomeBloc, HomeState>(
+      child: BlocConsumer<HomeBloc, HomeState>(
+        listener: (context, state) {
+          if (state is HomeError) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                    title: const Text("Error!"),
+                    titleTextStyle: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(
+                            color: Theme.of(context).colorScheme.onError),
+                    content: Text(
+                      state.error.toString(),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onError),
+                    ),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("Ok"))
+                    ],
+                  );
+                });
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(

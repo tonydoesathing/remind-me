@@ -175,19 +175,19 @@ class ScheduleUtils {
     // if not repeating, return the date
     switch (schedule.repetition) {
       case "Once":
-        return "Once on ${schedule.month}/${schedule.day}/${schedule.year} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+        return "Once on ${schedule.month}/${schedule.day}/${schedule.year} at ${schedule.hour! == 0 ? 0 : ""}${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
 
       case "Daily":
-        return "Every day at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+        return "Every day at ${schedule.hour! == 0 ? 0 : ""}${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
 
       case "Weekly":
-        return "Every ${dayToString(schedule.weekday!)} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+        return "Every ${dayToString(schedule.weekday!)} at ${schedule.hour! == 0 ? 0 : ""}${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
 
       case "Monthly":
-        return "Every ${dayToQualifierString(schedule.day!)} of the month at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+        return "Every ${dayToQualifierString(schedule.day!)} of the month at ${schedule.hour! == 0 ? 0 : ""}${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
 
       case "Yearly":
-        return "Every ${schedule.month}/${schedule.day} at ${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
+        return "Every ${schedule.month}/${schedule.day} at ${schedule.hour! == 0 ? 0 : ""}${schedule.hour}:${schedule.minute! < 10 ? 0 : ""}${schedule.minute}";
 
       default:
         return schedule.toString();

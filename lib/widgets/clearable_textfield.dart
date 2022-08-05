@@ -15,13 +15,15 @@ class ClearableTextField extends StatefulWidget {
   final String? errorText;
   final String? label;
   final Widget? prefix;
+  final TextInputType? keyboardType;
   const ClearableTextField(
       {Key? key,
       this.initialValue,
       this.onChanged,
       this.errorText,
       this.label,
-      this.prefix})
+      this.prefix,
+      this.keyboardType})
       : super(key: key);
 
   @override
@@ -41,6 +43,7 @@ class _ClearableTextFieldState extends State<ClearableTextField> {
   Widget build(BuildContext context) {
     return TextField(
       onChanged: widget.onChanged,
+      keyboardType: widget.keyboardType,
       controller: _controller,
       decoration: InputDecoration(
           border: const OutlineInputBorder(),
