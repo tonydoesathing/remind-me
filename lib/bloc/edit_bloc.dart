@@ -19,7 +19,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                 null,
                 Schedule(
                   repeating: false,
-                  minute: DateTime.now().minute,
+                  minute: DateTime.now().add(const Duration(minutes: 1)).minute,
                   hour: DateTime.now().hour,
                   day: DateTime.now().day,
                   month: DateTime.now().month,
@@ -31,7 +31,8 @@ class EditBloc extends Bloc<EditEvent, EditState> {
                     type: Reminder.website,
                     schedule: Schedule(
                       repeating: false,
-                      minute: DateTime.now().minute,
+                      minute:
+                          DateTime.now().add(const Duration(minutes: 1)).minute,
                       hour: DateTime.now().hour,
                       day: DateTime.now().day,
                       month: DateTime.now().month,
@@ -41,7 +42,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
       _ValidateResults results = _validate(event);
       // make sure title isn't an empty string
       String? title =
-          event.title != null && event.title!.length == 0 ? null : event.title;
+          event.title != null && event.title!.isEmpty ? null : event.title;
       if (results.isError) {
         emit(EditSaveFailure(
             title,
@@ -141,6 +142,16 @@ class EditBloc extends Bloc<EditEvent, EditState> {
     }
     if (event.schedule.minute == null || event.schedule.hour == null) {
       timeError = "Time is required";
+    } else if (!event.schedule.repeating &&
+        DateTime.now().compareTo(DateTime(
+                event.schedule.year!,
+                event.schedule.month!,
+                event.schedule.day!,
+                event.schedule.hour!,
+                event.schedule.minute!)) >
+            -1) {
+      timeError = "Time must be in the future";
+      scheduleError = "Date must be in the future";
     }
     return _ValidateResults(
         titleError: titleError,

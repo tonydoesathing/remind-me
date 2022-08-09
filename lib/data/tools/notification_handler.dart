@@ -2,18 +2,24 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:remind_me/data/models/reminder.dart';
+import 'package:remind_me/data/repositories/local_reminder_repository.dart';
 import 'package:remind_me/data/repositories/reminder_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// A handler for the notification scheduling. Requires a [repository] to be initialized so it can react to [Reminder] changes
 class NotificationHandler {
   final ReminderRepository repository;
+  List<Reminder> reminders =
+      []; // to keep track of changes in lieu of setting up event system
   static const String _channelKey = "reminder_channel";
 
   NotificationHandler(this.repository);
 
   /// Initialize the handler
   Future<bool> initialize() async {
+    // initial reminder list to keep track of changes
+    reminders = await repository.fetchReminders();
+
     await AwesomeNotifications().initialize(
         null,
         [
@@ -49,14 +55,11 @@ class NotificationHandler {
     AwesomeNotifications()
         .displayedStream
         .listen((ReceivedNotification displayedNotification) async {
-      print("displayed ${displayedNotification.id}");
       if (displayedNotification.id != null) {
         try {
           Reminder reminder =
               await repository.fetchReminder(displayedNotification.id!);
           if (!reminder.schedule.repeating) {
-            // wait for a notification to display
-            await Future.delayed(const Duration(seconds: 5));
             repository.editReminder(reminder.copyWith(enabled: false));
           }
         } catch (e) {
@@ -68,10 +71,38 @@ class NotificationHandler {
     repository.reminders.listen((event) async {
       // TODO: probably would've been better to have had a whole event system for add, remove, edit, etc.
 
-      // remove all scheduled notifications
-      AwesomeNotifications().cancelAll();
-      // schedule all notifications
-      for (Reminder reminder in event) {
+      // compare the lists of reminders to see what's changed
+      List<Reminder> newOnes = event
+          .toSet()
+          .difference(reminders.toSet())
+          .toList(); // new/edited reminders
+      List<Reminder> deletedOnes = reminders
+          .toSet()
+          .difference(event.toSet())
+          .toList(); // deleted reminders
+
+      // if a reminder is edited, it will be in both new and deleted,
+      // with the one in deleted being the old value and the one in new being the new value
+
+      // update local reminder list
+      reminders = event;
+
+      // remove all deleted reminder notification schedules
+      for (Reminder reminder in deletedOnes) {
+        // can delete if ID not in newOnes
+        final int index = newOnes.indexWhere((element) {
+          if (element.id != null && element.id == reminder.id) {
+            return true;
+          }
+          return false;
+        });
+        if (reminder.id != null && index < 0) {
+          await AwesomeNotifications().cancel(reminder.id!);
+        }
+      }
+
+      // schedule all new/edited reminders
+      for (Reminder reminder in newOnes) {
         // only schedule reminders that should be scheduled
         if (reminder.id != null && reminder.enabled == true) {
           bool created = await AwesomeNotifications().createNotification(
@@ -94,17 +125,8 @@ class NotificationHandler {
                   year: reminder.schedule.year,
                   second: 0,
                   preciseAlarm: true));
-          // disable reminder if couldn't create or if in the past
-          if (!created ||
-              (!reminder.schedule.repeating &&
-                  DateTime(
-                              reminder.schedule.year!,
-                              reminder.schedule.month!,
-                              reminder.schedule.day!,
-                              reminder.schedule.hour!,
-                              reminder.schedule.minute!)
-                          .compareTo(DateTime.now()) <
-                      1)) {
+          // disable reminder if couldn't create
+          if (!created) {
             repository.editReminder(reminder.copyWith(enabled: false));
           }
         }

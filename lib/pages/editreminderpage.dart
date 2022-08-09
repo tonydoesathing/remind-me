@@ -255,10 +255,13 @@ class EditReminderPage extends StatelessWidget {
                       controller: TextEditingController(
                           text:
                               "${state.schedule.month}/${state.schedule.day}/${state.schedule.year}"),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        errorText: state is EditSaveFailure
+                            ? state.error.scheduleError
+                            : null,
                         labelText: "Day",
-                        prefixIcon: Icon(Icons.calendar_month),
+                        prefixIcon: const Icon(Icons.calendar_month),
                       ),
                       onTap: () async {
                         DateTime? date = await showDatePicker(
