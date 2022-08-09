@@ -70,7 +70,11 @@ class PersistedReminderRepository extends ReminderRepository {
     }).toList();
 
     for (Reminder reminder in reminders) {
-      _repository.addReminder(reminder);
+      try {
+        await _repository.editReminder(reminder);
+      } on ReminderNotFound {
+        _repository.addReminder(reminder);
+      }
     }
     return reminders;
   }

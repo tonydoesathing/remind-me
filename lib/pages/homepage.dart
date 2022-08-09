@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remind_me/bloc/home_bloc.dart';
 import 'package:remind_me/data/repositories/reminder_repository.dart';
+import 'package:remind_me/data/tools/notification_handler.dart';
 import 'package:remind_me/pages/editreminderpage.dart';
 import 'package:remind_me/widgets/reminder_widget.dart';
 
@@ -78,12 +79,17 @@ class HomePage extends StatelessWidget {
                 ? FloatingActionButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
-                    onPressed: (() {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EditReminderPage()),
-                      );
+                    onPressed: (() async {
+                      // check for required permissions
+                      bool allowed =
+                          await NotificationHandler.checkPermissions(context);
+                      if (allowed) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const EditReminderPage()),
+                        );
+                      }
                     }),
                     child: const Icon(Icons.add),
                   )
