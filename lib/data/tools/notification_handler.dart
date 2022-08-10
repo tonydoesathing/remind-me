@@ -2,7 +2,6 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:remind_me/data/models/reminder.dart';
-import 'package:remind_me/data/repositories/local_reminder_repository.dart';
 import 'package:remind_me/data/repositories/reminder_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,20 +20,20 @@ class NotificationHandler {
     reminders = await repository.fetchReminders();
 
     await AwesomeNotifications().initialize(
-        null,
-        [
-          NotificationChannel(
-            channelGroupKey: 'Reminders',
-            channelKey: _channelKey,
-            channelName: 'Reminder Notifications',
-            channelDescription: 'Notification channel for reminders',
-            ledColor: Colors.white,
-            vibrationPattern: mediumVibrationPattern,
-            defaultRingtoneType: DefaultRingtoneType.Alarm,
-            importance: NotificationImportance.High,
-          ),
-        ],
-        debug: true);
+      null,
+      [
+        NotificationChannel(
+          channelGroupKey: 'Reminders',
+          channelKey: _channelKey,
+          channelName: 'Reminder Notifications',
+          channelDescription: 'Notification channel for reminders',
+          ledColor: Colors.white,
+          vibrationPattern: mediumVibrationPattern,
+          defaultRingtoneType: DefaultRingtoneType.Alarm,
+          importance: NotificationImportance.High,
+        ),
+      ],
+    );
     // On notification tapped, open the URL
     AwesomeNotifications()
         .actionStream
