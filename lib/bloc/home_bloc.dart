@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:remind_me/data/models/reminder.dart';
 import 'package:remind_me/data/models/schedule.dart';
 import 'package:remind_me/data/repositories/reminder_repository.dart';
@@ -40,70 +41,95 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
 
     on<ToggleReminderEnabled>(((event, emit) async {
-      await _reminderRepository.editReminder(event.edited);
+      try {
+        await _reminderRepository.editReminder(event.edited);
+      } catch (e) {
+        emit(HomeError(e, event.reminders, event.selected));
+      }
     }));
 
     on<ToggleSelectView>(((event, emit) {
-      if (event.selected == null) {
-        add(DisplayReminders(
-            event.reminders, event.reminder != null ? [event.reminder!] : []));
-      } else {
-        add(DisplayReminders(event.reminders, null));
+      try {
+        if (event.selected == null) {
+          add(DisplayReminders(event.reminders,
+              event.reminder != null ? [event.reminder!] : []));
+        } else {
+          add(DisplayReminders(event.reminders, null));
+        }
+      } catch (e) {
+        emit(HomeError(e, event.reminders, event.selected));
       }
     }));
 
     on<ToggleSelectAllReminders>(
       (event, emit) {
-        if (event.selected == event.reminders) {
-          add(DisplayReminders(event.reminders, const []));
-        } else {
-          add(DisplayReminders(event.reminders, event.reminders));
+        try {
+          if (listEquals(event.selected, event.reminders)) {
+            add(DisplayReminders(event.reminders, const []));
+          } else {
+            add(DisplayReminders(event.reminders, event.reminders));
+          }
+        } catch (e) {
+          emit(HomeError(e, event.reminders, event.selected));
         }
       },
     );
 
     on<ToggleSelectReminder>(((event, emit) {
-      if (event.selected != null && event.selected!.contains(event.reminder)) {
-        final int index = event.selected!.indexOf(event.reminder);
-        if (index < event.selected!.length - 1) {
+      try {
+        if (event.selected != null &&
+            event.selected!.contains(event.reminder)) {
+          final int index = event.selected!.indexOf(event.reminder);
+          if (index < event.selected!.length - 1) {
+            add(DisplayReminders(
+                event.reminders,
+                event.selected!.sublist(0, index) +
+                    event.selected!.sublist(index + 1)));
+          } else {
+            add(DisplayReminders(
+                event.reminders, event.selected!.sublist(0, index)));
+          }
+        } else if (event.selected != null) {
           add(DisplayReminders(
-              event.reminders,
-              event.selected!.sublist(0, index) +
-                  event.selected!.sublist(index + 1)));
-        } else {
-          add(DisplayReminders(
-              event.reminders, event.selected!.sublist(0, index)));
+              event.reminders, event.selected! + [event.reminder]));
         }
-      } else if (event.selected != null) {
-        add(DisplayReminders(
-            event.reminders, event.selected! + [event.reminder]));
+      } catch (e) {
+        emit(HomeError(e, event.reminders, event.selected));
       }
     }));
 
     on<ToggleSelectedReminders>(((event, emit) async {
-      List<Reminder> reminders = List.from(event.reminders);
-      // edit the reminders
-      for (Reminder reminder in event.selected!) {
-        Reminder edited = await _reminderRepository
-            .editReminder(reminder.copyWith(enabled: event.on));
-        // edit the reminders locally
-        int index = event.reminders.indexOf(reminder);
-        reminders[index] = edited;
+      try {
+        List<Reminder> reminders = List.from(event.reminders);
+        // edit the reminders
+        for (Reminder reminder in event.selected!) {
+          Reminder edited = await _reminderRepository
+              .editReminder(reminder.copyWith(enabled: event.on));
+          // edit the reminders locally
+          int index = event.reminders.indexOf(reminder);
+          reminders[index] = edited;
+        }
+        add(DisplayReminders(reminders, null));
+      } catch (e) {
+        emit(HomeError(e, event.reminders, event.selected));
       }
-      add(DisplayReminders(reminders, null));
     }));
 
     on<RemoveSelectedReminders>(
       (event, emit) async {
-        List<Reminder> reminders = List.from(event.reminders);
-        // remove the reminders
-        for (Reminder reminder in event.selected!) {
-          await _reminderRepository.removeReminder(reminder);
-          // remove the reminders locally
+        try {
+          List<Reminder> reminders = List.from(event.reminders);
+          // remove the reminders
+          for (Reminder reminder in event.selected!) {
+            await _reminderRepository.removeReminder(reminder);
+            // remove the reminders locally
 
-          reminders.remove(reminder);
+            reminders.remove(reminder);
+          }
+          add(DisplayReminders(reminders, null));
+        } catch (e) {
+          emit(HomeError(e, event.reminders, event.selected));
         }
-        add(DisplayReminders(reminders, null));
       },
     );
   }

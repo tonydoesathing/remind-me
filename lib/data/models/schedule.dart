@@ -123,7 +123,7 @@ class Schedule extends Equatable {
       day: map['day'] != null ? map['day'] as int : null,
       weekday: map['weekday'] != null ? map['weekday'] as int : null,
       month: map['month'] != null ? map['month'] as int : null,
-      year: ['year'] != null ? map['year'] as int : null,
+      year: map['year'] != null ? map['year'] as int : null,
     );
   }
 

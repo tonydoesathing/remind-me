@@ -1,12 +1,25 @@
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:remind_me/data/repositories/local_reminder_repository.dart';
+import 'package:remind_me/data/repositories/persisted_reminder_repository.dart';
 import 'package:remind_me/data/repositories/reminder_repository.dart';
+import 'package:remind_me/data/tools/notification_handler.dart';
 import 'package:remind_me/pages/homepage.dart';
 
-void main() {
-  runApp(App(reminderRepository: LocalReminderRepository()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final ReminderRepository repository = PersistedReminderRepository();
+
+  // only initialize notification handler if not web
+  if (!kIsWeb) {
+    final NotificationHandler notificationHandler =
+        NotificationHandler(repository);
+    await notificationHandler.initialize();
+  }
+
+  runApp(App(reminderRepository: repository));
 }
 
 const _brandPrimary = Color(0xFF4F57A9);
@@ -47,10 +60,13 @@ class App extends StatelessWidget {
 
             return MaterialApp(
               title: 'RemindMe',
+              debugShowCheckedModeBanner: false,
               theme: ThemeData(
                 useMaterial3: true,
                 colorScheme: lightColorScheme,
                 appBarTheme: AppBarTheme(
+                    systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+                        statusBarColor: const Color.fromARGB(0, 0, 0, 0)),
                     titleTextStyle: TextStyle(
                         color: lightColorScheme.onBackground, fontSize: 22),
                     backgroundColor: Colors.white.withAlpha(0),
@@ -64,6 +80,8 @@ class App extends StatelessWidget {
                 useMaterial3: true,
                 colorScheme: darkColorScheme,
                 appBarTheme: AppBarTheme(
+                    systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+                        statusBarColor: const Color.fromARGB(0, 0, 0, 0)),
                     titleTextStyle: TextStyle(
                         color: darkColorScheme.onBackground, fontSize: 22),
                     backgroundColor: Colors.white.withAlpha(0),

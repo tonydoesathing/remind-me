@@ -11,7 +11,8 @@ class LocalReminderRepository extends ReminderRepository {
 
   @override
   Future<Reminder> addReminder(Reminder reminder) async {
-    Reminder newReminder = reminder.copyWith(id: _reminders.length + 1);
+    Reminder newReminder =
+        reminder.copyWith(id: reminder.id ?? _reminders.length + 1);
     _reminders.add(newReminder);
     _streamController.add(List<Reminder>.of(_reminders));
     return newReminder;
@@ -46,7 +47,7 @@ class LocalReminderRepository extends ReminderRepository {
       _streamController.add(List<Reminder>.of(_reminders));
       return reminder;
     }
-    throw Exception("could not find reminder of id $reminder.id");
+    throw ReminderNotFound();
   }
 
   @override
@@ -56,7 +57,7 @@ class LocalReminderRepository extends ReminderRepository {
     if (index > -1) {
       return _reminders[index];
     }
-    throw Exception("could not find requested id of $id");
+    throw ReminderNotFound();
   }
 
   @override

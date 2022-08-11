@@ -86,7 +86,7 @@ class EditReminderPage extends StatelessWidget {
                     ? const Text("Edit Reminder")
                     : const Text("Add Reminder"),
               ),
-              body: Column(children: [
+              body: ListView(children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ClearableTextField(
@@ -108,8 +108,9 @@ class EditReminderPage extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ClearableTextField(
                     initialValue: state.initialReminder?.payload,
+                    keyboardType: TextInputType.url,
                     label: "URL",
-                    prefix: Icon(Icons.public),
+                    prefix: const Icon(Icons.public),
                     errorText: state is EditSaveFailure
                         ? state.error.payloadError
                         : null,
@@ -125,11 +126,12 @@ class EditReminderPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    readOnly: true,
                     controller: TextEditingController(
                         text:
-                            "${state.schedule.hour}:${state.schedule.minute! < 10 ? 0 : ""}${state.schedule.minute}"),
+                            "${state.schedule.hour! == 0 ? 0 : ""}${state.schedule.hour}:${state.schedule.minute! < 10 ? 0 : ""}${state.schedule.minute}"),
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       errorText: state is EditSaveFailure
                           ? state.error.timeError
                           : null,
@@ -249,13 +251,17 @@ class EditReminderPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
+                      readOnly: true,
                       controller: TextEditingController(
                           text:
                               "${state.schedule.month}/${state.schedule.day}/${state.schedule.year}"),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        errorText: state is EditSaveFailure
+                            ? state.error.scheduleError
+                            : null,
                         labelText: "Day",
-                        prefixIcon: Icon(Icons.calendar_month),
+                        prefixIcon: const Icon(Icons.calendar_month),
                       ),
                       onTap: () async {
                         DateTime? date = await showDatePicker(
@@ -323,6 +329,7 @@ class EditReminderPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
+                      readOnly: true,
                       controller: TextEditingController(
                           text:
                               "${ScheduleUtils().dayToQualifierString(state.schedule.day!)} of every month"),
@@ -353,6 +360,7 @@ class EditReminderPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
+                      readOnly: true,
                       controller: TextEditingController(
                           text:
                               "${state.schedule.month}/${state.schedule.day}"),

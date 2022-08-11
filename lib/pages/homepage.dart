@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remind_me/bloc/home_bloc.dart';
 import 'package:remind_me/data/repositories/reminder_repository.dart';
+import 'package:remind_me/data/tools/notification_handler.dart';
 import 'package:remind_me/pages/editreminderpage.dart';
 import 'package:remind_me/widgets/reminder_widget.dart';
 
@@ -13,7 +14,36 @@ class HomePage extends StatelessWidget {
     return BlocProvider(
       create: ((context) => HomeBloc(context.read<ReminderRepository>())
         ..add(const LoadHomeEvent([], null))),
-      child: BlocBuilder<HomeBloc, HomeState>(
+      child: BlocConsumer<HomeBloc, HomeState>(
+        listener: (context, state) {
+          if (state is HomeError) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                    title: const Text("Error!"),
+                    titleTextStyle: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(
+                            color: Theme.of(context).colorScheme.onError),
+                    content: Text(
+                      state.error.toString(),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onError),
+                    ),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("Ok"))
+                    ],
+                  );
+                });
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
@@ -49,12 +79,17 @@ class HomePage extends StatelessWidget {
                 ? FloatingActionButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
-                    onPressed: (() {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EditReminderPage()),
-                      );
+                    onPressed: (() async {
+                      // check for required permissions
+                      bool allowed =
+                          await NotificationHandler.checkPermissions(context);
+                      if (allowed) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const EditReminderPage()),
+                        );
+                      }
                     }),
                     child: const Icon(Icons.add),
                   )
