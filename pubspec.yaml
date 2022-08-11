@@ -53,12 +53,13 @@ flutter_icons:
   android: true
   adaptive_icon_background: "#D9E2FF"
   adaptive_icon_foreground: "assets/ic_launcher_adaptive_fore.png"
+  image_path_android: "assets/logo-alpha.png"
   ios: true
   remove_alpha_ios: true
   image_path: "assets/logo.png"
   web: 
     generate: true
-    image_path: "assets/logo.png"
+    image_path: "assets/logo_rounded_rect.png"
     background_color: "#FEFBFE"
     theme_color: "#D9E2FF"
 

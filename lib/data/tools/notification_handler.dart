@@ -20,7 +20,7 @@ class NotificationHandler {
     reminders = await repository.fetchReminders();
 
     await AwesomeNotifications().initialize(
-      null,
+      "resource://drawable/ic_launcher_alpha",
       [
         NotificationChannel(
           channelGroupKey: 'Reminders',
