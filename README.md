@@ -6,9 +6,8 @@
 # RemindMe 
 <a href="https://www.flutter.org/" alt="Flutter"><img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white" /></a> 
 <a href="https://www.figma.com/file/ClVd12IfJiBPj1tKsO5OCh/Remind-me?node-id=0%3A1" alt="Figma"><img src="https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white" /></a>
-<a href="https://github.com/tonydoesathing/remind_me" alt="Figma"><img src="https://img.shields.io/github/manifest-json/v/tonydoesathing/remind_me" /></a>
-<a href="https://github.com/tonydoesathing/remind_me" alt="Figma"><img src="https://img.shields.io/github/last-commit/tonydoesathing/remind_me" /></a>
-
+<a href="https://github.com/tonydoesathing/remind-me" alt="Figma"><img src="https://img.shields.io/github/v/release/tonydoesathing/remind-me" /></a>
+<a href="https://github.com/tonydoesathing/remind-me" alt="Figma"><img src="https://img.shields.io/github/last-commit/tonydoesathing/remind-me" /></a>
 
 A simple Flutter app to schedule reminder notifications with custom callbacks.
 
