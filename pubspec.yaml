@@ -44,9 +44,23 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   bloc_test: ^9.0.3
   mocktail: ^0.3.0
+  flutter_launcher_icons: ^0.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_icons:
+  android: true
+  adaptive_icon_background: "#D9E2FF"
+  adaptive_icon_foreground: "assets/ic_launcher_adaptive_fore.png"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/logo.png"
+  web: 
+    generate: true
+    image_path: "assets/logo.png"
+    background_color: "#FEFBFE"
+    theme_color: "#D9E2FF"
 
 # The following section is specific to Flutter packages.
 flutter:
