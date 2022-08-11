@@ -60,6 +60,7 @@ class App extends StatelessWidget {
 
             return MaterialApp(
               title: 'RemindMe',
+              debugShowCheckedModeBanner: false,
               theme: ThemeData(
                 useMaterial3: true,
                 colorScheme: lightColorScheme,

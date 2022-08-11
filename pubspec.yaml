@@ -13,10 +13,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
   equatable: ^2.0.3
   flutter_bloc: ^8.0.1
   awesome_notifications: ^0.6.21
@@ -53,7 +49,6 @@ flutter_icons:
   android: true
   adaptive_icon_background: "#D9E2FF"
   adaptive_icon_foreground: "assets/ic_launcher_adaptive_fore.png"
-  image_path_android: "assets/logo-alpha.png"
   ios: true
   remove_alpha_ios: true
   image_path: "assets/logo.png"
