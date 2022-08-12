@@ -11,6 +11,8 @@
 
 A simple Flutter app to schedule reminder notifications with custom callbacks.
 
+[Preview the app](https://tonydoesathing.github.io/remind-me/) (note: notifications do not work in web preview).
+
 <p align="center">
     <img src="assets/readme/reminder_example.gif" height=500>
 </p>
