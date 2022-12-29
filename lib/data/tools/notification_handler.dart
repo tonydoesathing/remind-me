@@ -23,15 +23,15 @@ class NotificationHandler {
       "resource://drawable/ic_launcher_alpha",
       [
         NotificationChannel(
-          channelGroupKey: 'Reminders',
-          channelKey: _channelKey,
-          channelName: 'Reminder Notifications',
-          channelDescription: 'Notification channel for reminders',
-          ledColor: Colors.white,
-          vibrationPattern: mediumVibrationPattern,
-          defaultRingtoneType: DefaultRingtoneType.Alarm,
-          importance: NotificationImportance.High,
-        ),
+            channelGroupKey: 'Reminders',
+            channelKey: _channelKey,
+            channelName: 'Reminder Notifications',
+            channelDescription: 'Notification channel for reminders',
+            ledColor: Colors.white,
+            vibrationPattern: mediumVibrationPattern,
+            defaultRingtoneType: DefaultRingtoneType.Alarm,
+            importance: NotificationImportance.High,
+            criticalAlerts: true),
       ],
     );
     // On notification tapped, open the URL
@@ -102,6 +102,7 @@ class NotificationHandler {
 
       // schedule all new/edited reminders
       for (Reminder reminder in newOnes) {
+        print(reminder);
         // only schedule reminders that should be scheduled
         if (reminder.id != null && reminder.enabled == true) {
           bool created = await AwesomeNotifications().createNotification(
@@ -123,7 +124,8 @@ class NotificationHandler {
                   month: reminder.schedule.month,
                   year: reminder.schedule.year,
                   second: 0,
-                  preciseAlarm: true));
+                  preciseAlarm: true,
+                  allowWhileIdle: true));
           // disable reminder if couldn't create
           if (!created) {
             repository.editReminder(reminder.copyWith(enabled: false));
